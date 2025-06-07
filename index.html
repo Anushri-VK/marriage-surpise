@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Surprise 🎉</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body, html {
+      height: 100%;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f0f8ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .surprise {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #e63946;
+      animation: fadeOut 2s ease-in-out forwards;
+    }
+    .video-container {
+      display: none;
+      width: 90%;
+      max-width: 800px;
+    }
+    video {
+      width: 100%;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    @keyframes fadeOut {
+      0% { opacity: 1; }
+      100% { opacity: 0; visibility: hidden; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="surprise" id="surpriseText">SURPRISE... 🎉</div>
+
+  <div class="video-container" id="videoContainer">
+    <video id="revealVideo" controls autoplay>
+      <source src="video.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <script>
+    setTimeout(() => {
+      document.getElementById('surpriseText').style.display = 'none';
+      document.getElementById('videoContainer').style.display = 'block';
+      const video = document.getElementById('revealVideo');
+      video.play();
+    }, 2000); // 2-second delay before video starts
+  </script>
+
+</body>
+</html>
