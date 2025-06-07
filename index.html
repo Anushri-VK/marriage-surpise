@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>💍 Big Reveal</title>
+  <title>Marriage Surprise 🎉</title>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
     body {
@@ -14,7 +14,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
+      height: 100vh;
       overflow: hidden;
     }
 
@@ -22,8 +22,20 @@
       font-size: 3rem;
       color: #d63384;
       text-align: center;
-      margin-bottom: 20px;
+      margin: 0;
       animation: fadeInText 2s ease-in-out;
+    }
+
+    .video-container {
+      opacity: 0;
+      transform: scale(0.9);
+      transition: all 1s ease;
+      margin-top: 20px;
+    }
+
+    .video-container.show {
+      opacity: 1;
+      transform: scale(1);
     }
 
     video {
@@ -31,19 +43,6 @@
       border: 6px solid #e83e8c;
       border-radius: 20px;
       box-shadow: 0 0 30px rgba(255, 105, 180, 0.4);
-      transform: scale(0);
-      animation: scaleUp 1.5s ease forwards 2s;
-    }
-
-    @keyframes scaleUp {
-      to {
-        transform: scale(1);
-      }
-    }
-
-    @keyframes fadeInText {
-      0% { opacity: 0; transform: translateY(-20px); }
-      100% { opacity: 1; transform: translateY(0); }
     }
 
     .celebrate {
@@ -54,36 +53,51 @@
       height: 100%;
       pointer-events: none;
     }
+
+    @keyframes fadeInText {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
   </style>
 </head>
 <body>
-  <h1>Guess What? 💍</h1>
-  <video controls autoplay>
-    <source src="video.mp4" type="video/mp4" />
-    Your browser does not support the video tag.
-  </video>
+  <h1 id="headline">Guess What?! 💍</h1>
+  <div class="video-container" id="videoContainer">
+    <video controls autoplay muted playsinline>
+      <source src="video.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+  </div>
   <canvas class="celebrate"></canvas>
 
   <script>
-    // Confetti celebration
-    const duration = 5 * 1000;
+    // 🎉 Confetti celebration
+    const duration = 3000;
     const animationEnd = Date.now() + duration;
     const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
 
-    const interval = setInterval(function() {
+    const interval = setInterval(() => {
       const timeLeft = animationEnd - Date.now();
-
       if (timeLeft <= 0) {
         return clearInterval(interval);
       }
-
-      const particleCount = 50 * (timeLeft / duration);
-      // Confetti burst from center
       confetti(Object.assign({}, defaults, {
-        particleCount,
-        origin: { x: 0.5, y: 0.6 }
+        particleCount: 50,
+        origin: { x: Math.random(), y: Math.random() - 0.2 }
       }));
-    }, 250);
+    }, 200);
+
+    // ⏱️ Show video after 3.5 seconds
+    setTimeout(() => {
+      document.getElementById("videoContainer").classList.add("show");
+      document.getElementById("headline").textContent = "Surprise Revealed 🎥";
+    }, 3500);
   </script>
 </body>
 </html>
