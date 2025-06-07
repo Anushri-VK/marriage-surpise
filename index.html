@@ -16,21 +16,26 @@
       justify-content: center;
       height: 100vh;
       overflow: hidden;
+      text-align: center;
     }
 
     h1 {
-      font-size: 3rem;
+      font-size: 3.5rem;
       color: #d63384;
-      text-align: center;
       margin: 0;
-      animation: fadeInText 2s ease-in-out;
+      opacity: 1;
+      transition: opacity 1s ease-in-out;
+    }
+
+    .hidden {
+      opacity: 0;
     }
 
     .video-container {
       opacity: 0;
       transform: scale(0.9);
       transition: all 1s ease;
-      margin-top: 20px;
+      margin-top: 30px;
     }
 
     .video-container.show {
@@ -53,31 +58,22 @@
       height: 100%;
       pointer-events: none;
     }
-
-    @keyframes fadeInText {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
   </style>
 </head>
 <body>
   <h1 id="headline">Guess What?! 💍</h1>
+
   <div class="video-container" id="videoContainer">
     <video controls autoplay muted playsinline>
-      <source src="video.mp4" type="video/mp4" />
+      <source src="marriage-surprise.mp4" type="video/mp4" />
       Your browser does not support the video tag.
     </video>
   </div>
+
   <canvas class="celebrate"></canvas>
 
   <script>
-    // 🎉 Confetti celebration
+    // 🎉 Confetti animation
     const duration = 3000;
     const animationEnd = Date.now() + duration;
     const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
@@ -93,10 +89,10 @@
       }));
     }, 200);
 
-    // ⏱️ Show video after 3.5 seconds
+    // ⏱️ After 3.5 sec, hide "Guess What" and show video
     setTimeout(() => {
+      document.getElementById("headline").classList.add("hidden");
       document.getElementById("videoContainer").classList.add("show");
-      document.getElementById("headline").textContent = "Surprise Revealed 🎥";
     }, 3500);
   </script>
 </body>
