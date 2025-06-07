@@ -2,63 +2,155 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Surprise 🎉</title>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
+
     body, html {
       height: 100%;
+      width: 100%;
       font-family: 'Segoe UI', sans-serif;
       background-color: #f0f8ff;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       overflow: hidden;
     }
-    .surprise {
-      font-size: 2.5rem;
-      font-weight: bold;
-      color: #e63946;
-      animation: fadeOut 2s ease-in-out forwards;
+
+    #revealButton {
+      font-size: 1.5rem;
+      padding: 12px 24px;
+      background-color: #ff4d6d;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      margin-bottom: 20px;
+      transition: transform 0.2s ease;
     }
+
+    #revealButton:hover {
+      transform: scale(1.05);
+    }
+
+    .surprise {
+      font-size: 3.5rem;
+      font-weight: bold;
+      color: #d62828;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+      animation: popIn 1s ease-out, fadeOut 1s ease-in-out 2.5s forwards;
+      z-index: 10;
+      display: none;
+    }
+
+    @keyframes popIn {
+      0% {
+        transform: scale(0.5);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+        visibility: hidden;
+      }
+    }
+
     .video-container {
       display: none;
       width: 90%;
       max-width: 800px;
+      z-index: 5;
     }
+
     video {
       width: 100%;
       border-radius: 16px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
-    @keyframes fadeOut {
-      0% { opacity: 1; }
-      100% { opacity: 0; visibility: hidden; }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 0;
     }
   </style>
 </head>
 <body>
 
+  <button id="revealButton">Click to Reveal 🎁</button>
+
   <div class="surprise" id="surpriseText">SURPRISE... 🎉</div>
 
   <div class="video-container" id="videoContainer">
-    <video id="revealVideo" controls autoplay>
+    <video id="revealVideo" controls>
       <source src="video.mp4" type="video/mp4" />
       Your browser does not support the video tag.
     </video>
   </div>
 
+  <audio id="bgMusic" loop>
+    <source src="bg-music.mp3" type="audio/mp3" />
+    Your browser does not support the audio tag.
+  </audio>
+
+  <canvas id="confettiCanvas"></canvas>
+
   <script>
-    setTimeout(() => {
-      document.getElementById('surpriseText').style.display = 'none';
-      document.getElementById('videoContainer').style.display = 'block';
-      const video = document.getElementById('revealVideo');
-      video.play();
-    }, 2000); // 2-second delay before video starts
+    const button = document.getElementById('revealButton');
+    const surpriseText = document.getElementById('surpriseText');
+    const videoContainer = document.getElementById('videoContainer');
+    const video = document.getElementById('revealVideo');
+    const bgMusic = document.getElementById('bgMusic');
+
+    button.addEventListener('click', () => {
+      button.style.display = 'none';
+
+      // Start music
+      bgMusic.volume = 0.4;
+      bgMusic.play();
+
+      // Show surprise text
+      surpriseText.style.display = 'block';
+
+      // Launch confetti
+      const duration = 3000;
+      const animationEnd = Date.now() + duration;
+      const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+      const interval = setInterval(() => {
+        const timeLeft = animationEnd - Date.now();
+        if (timeLeft <= 0) clearInterval(interval);
+
+        confetti(Object.assign({}, defaults, {
+          particleCount: 50,
+          origin: { x: Math.random(), y: Math.random() - 0.2 }
+        }));
+      }, 200);
+
+      // After 3.5 seconds show video
+      setTimeout(() => {
+        surpriseText.style.display = 'none';
+        videoContainer.style.display = 'block';
+        video.play();
+        bgMusic.pause();
+      }, 3500);
+    });
   </script>
 
 </body>
