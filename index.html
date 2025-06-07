@@ -19,6 +19,16 @@
       justify-content: center;
       flex-direction: column;
       overflow: hidden;
+      position: relative;
+    }
+    #confetti-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
     }
     .surprise {
       font-size: 3rem;
@@ -27,6 +37,7 @@
       margin-bottom: 20px;
       opacity: 0;
       animation: fadeInOut 3s ease-in-out forwards;
+      z-index: 2;
     }
     @keyframes fadeInOut {
       0% { opacity: 0; transform: scale(0.8); }
@@ -38,6 +49,7 @@
       display: none;
       width: 90%;
       max-width: 800px;
+      z-index: 2;
     }
     video {
       width: 100%;
@@ -53,6 +65,7 @@
       border-radius: 8px;
       cursor: pointer;
       transition: background-color 0.3s ease;
+      z-index: 2;
     }
     #revealBtn:hover {
       background-color: #ff3e30;
@@ -60,6 +73,8 @@
   </style>
 </head>
 <body>
+
+  <canvas id="confetti-canvas"></canvas> <!-- Confetti canvas -->
 
   <div id="surpriseText" class="surprise">Guess What?! 💍</div>
   <button id="revealBtn">Click to Reveal</button>
@@ -76,6 +91,9 @@
     Your browser does not support the audio element.
   </audio>
 
+  <!-- Confetti library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
   <script>
     const revealBtn = document.getElementById('revealBtn');
     const surpriseText = document.getElementById('surpriseText');
@@ -91,24 +109,42 @@
           clearInterval(fadeInterval);
           audio.pause();
         }
-      }, 300); // decrease every 300ms
+      }, 300);
+    }
+
+    function launchConfetti() {
+      const duration = 3000;
+      const end = Date.now() + duration;
+
+      const interval = setInterval(() => {
+        if (Date.now() > end) return clearInterval(interval);
+
+        confetti({
+          particleCount: 40,
+          startVelocity: 30,
+          spread: 360,
+          origin: {
+            x: Math.random(),
+            y: Math.random() * 0.4
+          }
+        });
+      }, 250);
     }
 
     revealBtn.addEventListener('click', () => {
-      // Hide button
       revealBtn.style.display = 'none';
 
-      // Show surprise text and start music
       surpriseText.style.opacity = 1;
-      bgMusic.volume = 1.0; // Loud volume
+      bgMusic.volume = 1.0;
       bgMusic.play();
+      launchConfetti();
 
       setTimeout(() => {
         surpriseText.style.display = 'none';
         videoContainer.style.display = 'block';
         video.play();
         fadeOutMusic(bgMusic);
-      }, 3500); // 3.5 seconds of surprise before video
+      }, 3500);
     });
   </script>
 
